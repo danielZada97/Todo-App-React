@@ -11,8 +11,21 @@ function writeStorage(data) {
 
 export const api = {
   todos: {
-    getAll() {
-      return Promise.resolve(readStorage());
+    getAll(params = {}) {
+      const todos = readStorage();
+
+      const filtered = todos.filter((todo) => {
+        const byCompleted =
+          !params.completed ||
+          String(todo.completed) === String(params.completed);
+
+        const byPriority =
+          !params.priority || todo.priority === params.priority;
+
+        return byCompleted && byPriority;
+      });
+
+      return Promise.resolve(filtered);
     },
 
     create(newTodo) {
