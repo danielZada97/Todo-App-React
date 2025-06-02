@@ -1,0 +1,7 @@
+.Filters {
+    display: flex;
+    gap: 10%;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
