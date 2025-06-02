@@ -10,6 +10,7 @@ export function useTodos() {
     setIsLoading(true);
     try {
       const data = await api.todos.getAll(filters);
+      console.log(filters);
       setTodos(data);
     } catch (error) {
       setErrorMessage("Failed to fetch todos:", error);
