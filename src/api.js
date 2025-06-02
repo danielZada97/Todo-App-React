@@ -1,28 +1,40 @@
-import axios from "axios";
-const http = axios.create({
-  baseURL: import.meta.env.VITE_MOCKAPI_BASE_URL,
-  timeout: 3000,
-  headers: { "content-type": "application/json" },
-});
-http.interceptors.response.use(({ data }) => data);
+const LOCAL_STORAGE_KEY = "todos";
+
+function readStorage() {
+  const data = localStorage.getItem(LOCAL_STORAGE_KEY);
+  return data ? JSON.parse(data) : [];
+}
+
+function writeStorage(data) {
+  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
+}
 
 export const api = {
   todos: {
-    getAll(params = {}) {
-      return http
-        .get("todos", { params })
-        .catch((error) =>
-          error?.response?.status === 404 ? [] : Promise.reject(error)
-        );
+    getAll() {
+      return Promise.resolve(readStorage());
     },
-    create(data) {
-      return http.post("todos", data);
+
+    create(newTodo) {
+      const todos = readStorage();
+      const newId = `${Date.now()}`;
+      const todo = { id: newId, ...newTodo };
+      writeStorage([...todos, todo]);
+      return Promise.resolve(todo);
     },
-    update(id, data) {
-      return http.put(`todos/${id}`, data);
+
+    update(id, updatedTodo) {
+      const todos = readStorage().map((todo) =>
+        todo.id === id ? { ...todo, ...updatedTodo } : todo
+      );
+      writeStorage(todos);
+      return Promise.resolve(updatedTodo);
     },
+
     delete(id) {
-      return http.delete(`todos/${id}`);
+      const todos = readStorage().filter((todo) => todo.id !== id);
+      writeStorage(todos);
+      return Promise.resolve();
     },
   },
 };
