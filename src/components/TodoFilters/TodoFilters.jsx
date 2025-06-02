@@ -6,11 +6,12 @@ export default function TodoFilters({ onFilter }) {
   const [priority, setPriority] = useState("all");
   useEffect(() => {
     const filters = {
-      completed: COMPLETED_FILTERS[completed].value,
-      priority: PRIORITY_FILTERS[priority].value,
+      completed: completed === "all" ? "" : COMPLETED_FILTERS[completed].value,
+      priority: priority === "all" ? "" : PRIORITY_FILTERS[priority].value,
     };
     onFilter(filters);
   }, [completed, priority]);
+
   return (
     <section>
       <h3>Filters</h3>

@@ -27,7 +27,6 @@ export const api = {
 
       return Promise.resolve(filtered);
     },
-
     create(newTodo) {
       const todos = readStorage();
       const newId = `${Date.now()}`;
